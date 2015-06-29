@@ -1,0 +1,2 @@
+/usr/share/auto-bridge/auto-bridge-ifupdown	/etc/network/if-up.d/auto-bridge-ifupdown
+/usr/share/auto-bridge/auto-bridge-ifupdown	/etc/network/if-down.d/auto-bridge-ifupdown

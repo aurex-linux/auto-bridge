@@ -1,0 +1,50 @@
+#!/bin/sh
+# -------
+
+
+# funcs
+# -----
+
+get_first_physical_device(){
+	for d in $(ls /sys/class/net/ |sort -u) ; do
+		if [ ! -e "/sys/devices/virtual/net/$d" ] ; then
+			echo "$d"
+			break
+		fi
+	done
+}
+
+# vars
+# ----
+
+[ "$IFACE" ] || exit 0
+
+CONF_FILE="/etc/auto-bridge/auto-bridge.conf"
+if [ -r "$CONF_FILE" ] ; then
+	. $CONF_FILE
+fi
+
+if [ -z "$AUTO_BRIDGE_LIST" ] ; then
+	AUTO_BRIDGE_LIST="$(get_first_physical_device)"
+fi
+
+if ! echo " $AUTO_BRIDGE_LIST " |grep -q " $IFACE " ; then
+	# NOTHING TO DO
+	exit 0
+fi
+
+case "$MODE" in
+	start)
+		if [ "$PHASE" = "post-up" ] ; then
+			auto-bridge add "$IFACE" "$METHOD"
+		fi
+		;;
+	stop)
+		if [ "$PHASE" = "pre-down" ] ; then
+			auto-bridge del "$IFACE" "$METHOD"
+		fi
+		;;
+esac
+
+exit 0
+

@@ -22,7 +22,7 @@
 # vars
 # ----
 CONF_FILE="/etc/auto-bridge/auto-bridge.conf"
-
+PREFIX="autobr-"
 
 # funcs
 # -----
@@ -33,15 +33,54 @@ die(){
 }
 
 usage(){
-	die "Usage: $(basename "$0") {add|del} PHYSICAL_DEVICE"
+	die "Usage: $(basename "$0") {add|del} PHYSICAL_DEVICE [MODE]"
+}
+
+add_bridge(){
+	rc=0
+	ip addr flush dev "$IFACE" || rc=$?
+	[ $rc -ne 0 ] || brctl addbr "$BRIDGE" || rc=$?
+	[ $rc -ne 0 ] || brctl addif "$BRIDGE" "$IFACE" || rc=$?
+	[ $rc -ne 0 ] || ip link set dev "$BRIDGE" up || rc=$?
+	[ $rc -ne 0 ] || dhclient "$BRIDGE" || rc=$?
+	[ $rc -ne 0 ] || dhclient "$IFACE" || rc=$?
+	return $rc
+}
+
+del_bridge(){
+	rc=0
+	ip addr flush dev "$BRIDGE" || rc=$?
+	[ $rc -ne 0 ] || ip link set dev "$BRIDGE" down || rc=$?
+	[ $rc -ne 0 ] || brctl deldbr "$BRIDGE" || rc=$?
+	return $rc
 }
 
 
-[ $# -eq 2 ] || usage
+
+[ $# -ge 2 ] || usage
+
 ACTION="$1"
 IFACE="$2"
-[ -e  "/sys/class/net/$IFACE2" ] && [ ! -e "/sys/devices/virtual/net/$IFACE" ] ; then
+MODE="$3"
+[ "$MODE" ] $MODE="dhcp" 
+
+[ -e  "/sys/class/net/$IFACE" ] || usage
+[ ! -e "/sys/devices/virtual/net/$IFACE" ] || usage
+
+BRIDGE="$PREFIX-${IFACE}"
 	
+rc=0
 case "$ACTION" in
 	add)
-		
+		add_bridge || rc=$?
+		;;
+	del)
+		del_bridge || rc=$?
+		;;
+	*)
+		usage
+		;;
+esac
+
+exit $rc
+
