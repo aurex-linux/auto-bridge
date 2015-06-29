@@ -1,0 +1,14 @@
+Source: auto-bridge
+Section: admin
+Priority: optional
+Maintainer: Luis Garcia Gisbert <luisgg@gmail.com>
+Build-Depends: debhelper (>= 7.0)
+Standards-Version: 3.9.3
+
+Package: auto-bridge
+Architecture: all
+Depends: ${misc:Depends}, bridge-utils
+Description: Automatic bridge configuration from ifupdown scripts
+ The package provides automatic bridge configuration when physical
+ interfaces stand up.
+
