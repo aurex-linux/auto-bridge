@@ -62,12 +62,12 @@ del_bridge(){
 ACTION="$1"
 IFACE="$2"
 MODE="$3"
-[ "$MODE" ] $MODE="dhcp" 
+[ "$MODE" ] || $MODE="dhcp" 
 
 [ -e  "/sys/class/net/$IFACE" ] || usage
 [ ! -e "/sys/devices/virtual/net/$IFACE" ] || usage
 
-BRIDGE="$PREFIX-${IFACE}"
+BRIDGE="${PREFIX}${IFACE}"
 	
 rc=0
 case "$ACTION" in
