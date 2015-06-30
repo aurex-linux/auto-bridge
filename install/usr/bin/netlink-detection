@@ -1,0 +1,75 @@
+#!/bin/sh
+# -------
+# File:        netlink-detection 
+# Description: tests network link
+# Author:      Luis Antonio Garcia Gisbert <luisgg@gmail.com> 
+# 
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along 
+# with this program; if not, write to the Free Software Foundation, Inc., 
+# 51 Franklin St, Fifth Floor, Boston MA 02110-1301 USA
+# --------
+
+# vars
+# ----
+
+# funcs
+# -----
+
+die(){
+	echo "$1" >&2
+	exit 1
+}
+
+usage(){
+	die "Usage: $(basename "$0") PHYSICAL_DEVICE [TIMEOUT]"
+}
+
+[ "$1" ] || usage
+
+IFACE="$1" 
+[ -e "/sys/class/net/$IFACE" ] || die "Interface does not exist" 
+TIMEOUT="$2"
+[ "$TIMEOUT" ] || TIMEOUT=5 
+
+t=0
+link=1
+while [ $t -le $TIMEOUT ] ; do 
+	if [ -e /sys/class/net/$IFACE/carrier ] ; then
+		if grep -q "1" "/sys/class/net/$IFACE/carrier"; then
+			link=0
+			break
+		fi
+	fi
+	if [ -e /sys/class/net/$IFACE/operstate ] ; then
+		if grep -q "up" "/sys/class/net/$IFACE/operstate"; then
+			link=0
+			break
+		fi
+	fi
+	if [ $(id -u) -eq 0 ] ; then
+		if ethtool "$IFACE" | grep -q "Link detected: yes"; then
+			link=0
+			break
+		fi
+	fi
+	sleep 1
+	t=$(($t+1))
+done
+
+if [ $link -eq 0 ] ; then
+	echo "Network link is up"
+else
+	echo "Network link is down"
+fi
+
+exit $link

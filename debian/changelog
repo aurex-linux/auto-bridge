@@ -1,3 +1,9 @@
+auto-bridge (0.2) trusty; urgency=medium
+
+  * New tool for detecting network link
+
+ -- Luis Antonio Garcia Gisbert <luisgg@gmail.com>  Tue, 30 Jun 2015 17:12:57 +0200
+
 auto-bridge (0.1) trusty; urgency=medium
 
   * Initial release.
