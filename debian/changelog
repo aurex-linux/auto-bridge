@@ -1,3 +1,9 @@
+auto-bridge (0.3) trusty; urgency=medium
+
+  * Added ethtool missing depends 
+
+ -- Sandra Villanueva Gavino <savilga@gmail.com>  Tue, 30 Jun 2015 17:25:09 +0200
+
 auto-bridge (0.2) trusty; urgency=medium
 
   * New tool for detecting network link
