@@ -51,7 +51,7 @@ del_bridge(){
 	rc=0
 	ip addr flush dev "$BRIDGE" || rc=$?
 	[ $rc -ne 0 ] || ip link set dev "$BRIDGE" down || rc=$?
-	[ $rc -ne 0 ] || brctl deldbr "$BRIDGE" || rc=$?
+	[ $rc -ne 0 ] || brctl delbr "$BRIDGE" || rc=$?
 	return $rc
 }
 
