@@ -1,3 +1,9 @@
+auto-bridge (0.5) trusty; urgency=medium
+
+  * Fixed link detection when the interface is down
+
+ -- Luis Antonio Garcia Gisbert <luisgg@gmail.com>  Thu, 02 Jul 2015 17:27:53 +0200
+
 auto-bridge (0.4) trusty; urgency=medium
 
   * Fixed auto-bridge function

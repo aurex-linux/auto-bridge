@@ -35,6 +35,7 @@ usage(){
 }
 
 [ "$1" ] || usage
+[ $(id -u) -eq 0 ] || die "You must be root, my friend"
 
 IFACE="$1" 
 [ -e "/sys/class/net/$IFACE" ] || die "Interface does not exist" 
@@ -43,6 +44,9 @@ TIMEOUT="$2"
 
 t=0
 link=1
+
+ifconfig "$IFACE" up || true
+
 while [ $t -le $TIMEOUT ] ; do 
 	if [ -e /sys/class/net/$IFACE/carrier ] ; then
 		if grep -q "1" "/sys/class/net/$IFACE/carrier"; then
@@ -56,11 +60,9 @@ while [ $t -le $TIMEOUT ] ; do
 			break
 		fi
 	fi
-	if [ $(id -u) -eq 0 ] ; then
-		if ethtool "$IFACE" | grep -q "Link detected: yes"; then
-			link=0
-			break
-		fi
+	if ethtool "$IFACE" | grep -q "Link detected: yes"; then
+		link=0
+		break
 	fi
 	sleep 1
 	t=$(($t+1))
@@ -69,6 +71,7 @@ done
 if [ $link -eq 0 ] ; then
 	echo "Network link is up"
 else
+	ifconfig "$IFACE" down || true
 	echo "Network link is down"
 fi
 
