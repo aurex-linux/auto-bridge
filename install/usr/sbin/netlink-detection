@@ -37,30 +37,30 @@ usage(){
 [ "$1" ] || usage
 [ $(id -u) -eq 0 ] || die "You must be root, my friend"
 
-IFACE="$1" 
-[ -e "/sys/class/net/$IFACE" ] || die "Interface does not exist" 
+NETIFACE="$1" 
+[ -e "/sys/class/net/$NETIFACE" ] || die "Interface does not exist" 
 TIMEOUT="$2"
 [ "$TIMEOUT" ] || TIMEOUT=5 
 
 t=0
 link=1
 
-ifconfig "$IFACE" up || true
+ifconfig "$NETIFACE" up || true
 
 while [ $t -le $TIMEOUT ] ; do 
-	if [ -e /sys/class/net/$IFACE/carrier ] ; then
-		if grep -q "1" "/sys/class/net/$IFACE/carrier"; then
+	if [ -e /sys/class/net/$NETIFACE/carrier ] ; then
+		if grep -q "1" "/sys/class/net/$NETIFACE/carrier"; then
 			link=0
 			break
 		fi
 	fi
-	if [ -e /sys/class/net/$IFACE/operstate ] ; then
-		if grep -q "up" "/sys/class/net/$IFACE/operstate"; then
+	if [ -e /sys/class/net/$NETIFACE/operstate ] ; then
+		if grep -q "up" "/sys/class/net/$NETIFACE/operstate"; then
 			link=0
 			break
 		fi
 	fi
-	if ethtool "$IFACE" | grep -q "Link detected: yes"; then
+	if ethtool "$NETIFACE" | grep -q "Link detected: yes"; then
 		link=0
 		break
 	fi
@@ -71,8 +71,11 @@ done
 if [ $link -eq 0 ] ; then
 	echo "Network link is up"
 else
-	ifconfig "$IFACE" down || true
+	ifconfig "$NETIFACE" down || true
+	if [ "$IFACE" ] && [ "$METHOD" ] && [ "$MODE" ] && [ "$PHASE" ] && [ -x /sbin/initctl ] ; then
+		# try to stop the infamous failsafe-boot delay ....
+		/sbin/initctl emit static-network-up || true
+        fi
 	echo "Network link is down"
 fi
-
 exit $link

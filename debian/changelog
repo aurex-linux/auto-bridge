@@ -1,3 +1,10 @@
+auto-bridge (0.6) trusty; urgency=medium
+
+  * netlink-detection improved to emit upstart signals to cooperate
+    with other services (failsafe-boot, aurex corporative client ...)
+
+ -- Luis Antonio Garcia Gisbert <luisgg@gmail.com>  Fri, 10 Jul 2015 12:59:25 +0200
+
 auto-bridge (0.5) trusty; urgency=medium
 
   * Fixed link detection when the interface is down
