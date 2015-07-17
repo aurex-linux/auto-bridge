@@ -1,3 +1,10 @@
+auto-bridge (0.7) trusty; urgency=medium
+
+  * Improved address configuration of physical and bridge interfaces
+  * Sample configuration file installed by default
+
+ -- Luis Antonio Garcia Gisbert <luisgg@gmail.com>  Fri, 17 Jul 2015 14:00:28 +0200
+
 auto-bridge (0.6) trusty; urgency=medium
 
   * netlink-detection improved to emit upstart signals to cooperate

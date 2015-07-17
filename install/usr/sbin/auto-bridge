@@ -36,14 +36,33 @@ usage(){
 	die "Usage: $(basename "$0") {add|del} PHYSICAL_DEVICE [MODE]"
 }
 
+copy_ip(){
+	CURRENT_IP="$(LANG=C ifconfig "$BRIDGE" |sed -ne "/inet addr:/{s%^[^:]*:%%;s%[[:blank:]].*$%%;p}")"
+	if [ "$CURRENT_IP" ] ; then
+		CURRENT_MASK="$(LANG=C ifconfig "$BRIDGE" |sed -ne "/Mask:/{s%^.*Mask:%%;s%[[:blank:]].*$%%;p}")"
+		if ifconfig "$IFACE" "$CURRENT_IP" netmask "$CURRENT_MASK" ; then
+			return 0
+		fi
+	fi
+	return 1
+}
+
 add_bridge(){
 	rc=0
-	ip addr flush dev "$IFACE" || rc=$?
+	if [ "$MODE" = "dhcp" ] ; then
+		# get current dhclient processes and stop then
+		ps ax |sed -ne "/\bdhclient\b.*[[:blank:]]${IFACE}$/s%^.*[[:blank:]]dhclient[[:blank:]]%%p" |while read DHCLIENT_ARGS ; do
+			dhclient -r $DHCLIENT_ARGS || true
+		done
+		
+	else
+		ip addr flush dev "$IFACE" || rc=$?
+	fi
 	[ $rc -ne 0 ] || brctl addbr "$BRIDGE" || rc=$?
 	[ $rc -ne 0 ] || brctl addif "$BRIDGE" "$IFACE" || rc=$?
 	[ $rc -ne 0 ] || ip link set dev "$BRIDGE" up || rc=$?
 	[ $rc -ne 0 ] || dhclient "$BRIDGE" || rc=$?
-	[ $rc -ne 0 ] || dhclient "$IFACE" || rc=$?
+	[ $rc -ne 0 ] || copy_ip || rc=$?
 	return $rc
 }
 

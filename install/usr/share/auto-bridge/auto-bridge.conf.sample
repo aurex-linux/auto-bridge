@@ -1,0 +1,16 @@
+# -------------------------------
+# auto-bridge configuration file
+# -------------------------------
+# 
+# Shell varible AUTO_BRIDGE_LIST contains the list (blank delimited) of network interfaces where
+# the program must generate an automatic bridge. For example, to configure bridges over eth0 and eth2
+# you must add a line in this file like:
+# AUTO_BRIDGE_LIST="eth0 eth2"
+#
+# If the list is empty (or there is no any reference to this variable in this file) auto-bridge defaults
+# to the first non virtual network device detected (usually "eth0" in most systems)
+#
+# To disable auto-bridge, you can assign the variable to a non existent or invalid device name.
+# By example:
+# UNCOMMENT NEXT LINE TO DISABLE AUTO-BRIDGE
+# AUTO_BRIDGE_LIST="NONE"
