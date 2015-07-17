@@ -41,6 +41,10 @@ copy_ip(){
 	if [ "$CURRENT_IP" ] ; then
 		CURRENT_MASK="$(LANG=C ifconfig "$BRIDGE" |sed -ne "/Mask:/{s%^.*Mask:%%;s%[[:blank:]].*$%%;p}")"
 		if ifconfig "$IFACE" "$CURRENT_IP" netmask "$CURRENT_MASK" ; then
+			# delete asociated route also
+			route -n |grep "[[:blank:]]${IFACE}$" |while read IF_ADDRESS IF_GW IF_MASK DUMMY; do
+				route del -net "$IF_ADDRESS" netmask "$IF_MASK" dev "$IFACE" || true
+			done
 			return 0
 		fi
 	fi

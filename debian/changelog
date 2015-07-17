@@ -1,3 +1,10 @@
+auto-bridge (0.8) trusty; urgency=medium
+
+  * Remove unwanted routes associated to deconfigured
+    physical interface
+
+ -- Luis Antonio Garcia Gisbert <luisgg@gmail.com>  Fri, 17 Jul 2015 14:27:04 +0200
+
 auto-bridge (0.7) trusty; urgency=medium
 
   * Improved address configuration of physical and bridge interfaces
