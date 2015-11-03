@@ -8,6 +8,7 @@ Standards-Version: 3.9.3
 Package: auto-bridge
 Architecture: all
 Depends: ${misc:Depends}, bridge-utils, iproute2, isc-dhcp-client, ethtool, net-tools
+Suggests: aurex-cc-switch
 Description: Automatic bridge configuration from ifupdown scripts
  The package provides automatic bridge configuration when physical
  interfaces stand up.

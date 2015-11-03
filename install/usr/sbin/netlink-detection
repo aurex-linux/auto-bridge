@@ -42,6 +42,8 @@ NETIFACE="$1"
 TIMEOUT="$2"
 [ "$TIMEOUT" ] || TIMEOUT=5 
 
+SWITCH_TOOL="/usr/sbin/aurex-cc-switch"
+
 t=0
 link=1
 
@@ -70,6 +72,10 @@ done
 
 if [ $link -eq 0 ] ; then
 	echo "Network link is up"
+	if [ -x "$SWITCH_TOOL" ] ; then
+		$SWITCH_TOOL enable || true
+	fi
+
 else
 	ifconfig "$NETIFACE" down || true
 	if [ "$IFACE" ] && [ "$METHOD" ] && [ "$MODE" ] && [ "$PHASE" ] && [ -x /sbin/initctl ] ; then
@@ -77,5 +83,8 @@ else
 		/sbin/initctl emit static-network-up || true
         fi
 	echo "Network link is down"
+	if [ -x "$SWITCH_TOOL" ] ; then
+		$SWITCH_TOOL disable || true
+	fi
 fi
 exit $link

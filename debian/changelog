@@ -1,3 +1,9 @@
+auto-bridge (0.9) trusty; urgency=medium
+
+  * Use /usr/sbin/aurex-cc-switch when available
+
+ -- Luis Antonio Garcia Gisbert <luisgg@gmail.com>  Tue, 03 Nov 2015 19:22:38 +0100
+
 auto-bridge (0.8) trusty; urgency=medium
 
   * Remove unwanted routes associated to deconfigured
