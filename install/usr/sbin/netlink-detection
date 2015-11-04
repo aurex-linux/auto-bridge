@@ -78,13 +78,13 @@ if [ $link -eq 0 ] ; then
 
 else
 	ifconfig "$NETIFACE" down || true
-	if [ "$IFACE" ] && [ "$METHOD" ] && [ "$MODE" ] && [ "$PHASE" ] && [ -x /sbin/initctl ] ; then
-		# try to stop the infamous failsafe-boot delay ....
-		/sbin/initctl emit static-network-up || true
-        fi
 	echo "Network link is down"
 	if [ -x "$SWITCH_TOOL" ] ; then
 		$SWITCH_TOOL disable || true
 	fi
+	if [ "$IFACE" ] && [ "$METHOD" ] && [ "$MODE" ] && [ "$PHASE" ] && [ -x /sbin/initctl ] ; then
+		# try to stop the infamous failsafe-boot delay ....
+		/sbin/initctl emit static-network-up || true
+        fi
 fi
 exit $link

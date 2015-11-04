@@ -1,0 +1,19 @@
+# netlink-detection
+
+description     "netlink-detection companion upstar task"
+
+start on starting lightdm
+
+stop on static-network-up
+
+task
+script
+	# TODO: please, use another method to determine that
+	# network configuration uses netlink-detection ...
+	if [ -r /etc/network/interfaces ] && grep "\(^[^#][[:blank:]]*\|^\)pre-up[[:blank:]]\+netlink-detection" /etc/network/interfaces ; then
+		while : ; do
+			sleep 1
+		done
+	fi
+end script
+
