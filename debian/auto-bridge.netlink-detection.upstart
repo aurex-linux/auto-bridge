@@ -11,8 +11,11 @@ script
 	# TODO: please, use another method to determine that
 	# network configuration uses netlink-detection ...
 	if [ -r /etc/network/interfaces ] && grep "\(^[^#][[:blank:]]*\|^\)pre-up[[:blank:]]\+netlink-detection" /etc/network/interfaces ; then
-		while : ; do
+		MAX_TIME=180
+		WAIT_TIME=0
+		while [ ! -d /var/run/network/static-network-up-emitted ] && [ $WAIT_TIME -lt $MAX_TIME ] ; do
 			sleep 1
+			WAIT_TIME=$(($WAIT_TIME + 1 ))
 		done
 	fi
 end script

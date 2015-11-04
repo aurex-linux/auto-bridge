@@ -1,3 +1,9 @@
+auto-bridge (0.11) trusty; urgency=medium
+
+  * Fixed stop of netlink-detection upstart task
+
+ -- Luis Antonio Garcia Gisbert <luisgg@gmail.com>  Thu, 05 Nov 2015 00:16:40 +0100
+
 auto-bridge (0.10) trusty; urgency=medium
 
   * Added upstart task to delay start of lightdm
